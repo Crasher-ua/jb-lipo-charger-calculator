@@ -11,8 +11,302 @@
         <script src="assets/angular.min.js"></script>
         <script src="assets/jb-calculator-main.js"></script>
     </head>
-    <body ng-app>
-        Hi!
-        {{2+3}}
+    <body ng-app="app"
+       ng-controller="calculatorController as calculatorCtrl">
+        <div class="container">
+            <h3>Is your lipo charger too big? Could you be charging faster?</h3>
+
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">INFO ABOUT YOUR BATTERY</h4>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-5">Enter your battery mAh here</div>
+
+                        <div class="col-4">
+                            <input type="number" ng-model="calculatorCtrl.batteryMah"/>
+                            mAh
+                        </div>
+
+                        <div class="col-3">If parallel charging, add up the mAh of all batteries on the charge board.</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-5">What's your battery's S-rating (cell count)</div>
+
+                        <div class="col-4">
+                            <input type="number" ng-model="calculatorCtrl.batterySRating"/>
+                            cells
+                        </div>
+
+                        <div class="col-3"></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-5">What's the max cell voltage for your battery chemistry</div>
+
+                        <div class="col-4">
+                            <input type="number" ng-model="calculatorCtrl.batteryVoltage"/>
+                            volts
+                        </div>
+
+                        <div class="col-3">Such as: 4.2 volts for lipo or 4.35 volts for LiHV</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-5">Based on that, your battery's max voltage is:</div>
+
+                        <div class="col-4">
+                            <span ng-bind="calculatorCtrl.getBatteryMaxVoltage()"></span>
+                            volts
+                        </div>
+
+                        <div class="col-3"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">INFO ABOUT YOUR CHARGER</h4>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-5">What is the watt rating of your charger</div>
+
+                        <div class="col-4">
+                            <input type="number" ng-model="calculatorCtrl.chargerWattRating"/>
+                            watts
+                        </div>
+
+                        <div class="col-3">If your charger can be powered both from AC and DC, then put in the watt and amp rating that matches the type of power you're using.</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-5">What is the amp rating of your charger</div>
+
+                        <div class="col-4">
+                            <input type="number" ng-model="calculatorCtrl.chargerAmpRating"/>
+                            amps
+                        </div>
+
+                        <div class="col-3"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">INFO ABOUT YOUR POWER SUPPLY</h4>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-5">How many volts does your charger's power supply output</div>
+
+                        <div class="col-4">
+                            <input type="number" ng-model="calculatorCtrl.supplyOutput">
+                            volts
+                        </div>
+
+                        <div class="col-3">If your charger has a built in power supply, most likely assume it is designed correctly to drive the output specs, and ignore this section</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-5">What's the watt rating of your PSU</div>
+
+                        <div class="col-4">
+                            <input type="number" ng-model="calculatorCtrl.supplyWattRating">
+                            watts
+                        </div>
+
+                        <div class="col-3"></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-5">What is the input amp rating of your charger (how many amps its input circuit is rated for)</div>
+
+                        <div class="col-4">
+                            <input type="number" ng-model="calculatorCtrl.supplyAmpRating">
+                            amps
+                        </div>
+
+                        <div class="col-3">Many chargers don't publish this spec, unfortunately. If you don't know, put a very high value like 100 and then ignore the "is low PSU voltage limiting" result.</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-5">What's the efficiency rating of your PSU (enter as a decimal percent such as 0.85)</div>
+
+                        <div class="col-4">
+                            <input type="number" ng-model="calculatorCtrl.supplyEfficiencyRating">
+                        </div>
+
+                        <div class="col-3">For PC power supplies, this is usually 80% or higher</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">CONCLUSIONS</h4>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-5">Size of PSU (watts) needed to max out the input rating on your charger</div>
+
+                        <div class="col-4">
+                            <span ng-bind="calculatorCtrl.getSupplyWattsNeeded()"></span>
+                            watts
+                        </div>
+
+                        <div class="col-3"></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-5">Based on your PSU watt rating, the maximum amps you could charge at is</div>
+
+                        <div class="col-4">
+                            <span ng-bind="calculatorCtrl.getSupplyMaxChargingAmps()"></span>
+                            amps
+                        </div>
+
+                        <div class="col-3"></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-5">Based on your battery's mAh, this would be a C rate of</div>
+
+                        <div class="col-4">
+                            <span ng-bind="calculatorCtrl.getCRate()"></span>
+                            C
+                        </div>
+
+                        <div class="col-3">A charge rate of 1C is safest. Some batteries are rated for up to 3C to 5C. Anything more than 5C is reckless.</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5">Is your PSU watt rating limiting your max possible charge rate? (Could you charger faster with a higher wattage PSU?)</div>
+
+                        <div class="col-4">
+                            <span ng-bind="calculatorCtrl.getSupplyLimitingLabel()"></span>
+                        </div>
+                        <div class="col-3"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4 box-shadow">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-5">Based on your charger's input amp limit, the max output watts you could charge at is:</div>
+
+                        <div class="col-4">
+                            <span ng-bind="calculatorCtrl.getMaxChargingOutputWatt()"></span>
+                            watts
+                        </div>
+
+                        <div class="col-3">If you didn't know your charger's input amp rating, ignore this section. It's possible that your PSU voltage will limit your max possible charge rate.</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-5">Based on your battery's voltage, this would be:</div>
+
+                        <div class="col-4">
+                            <span ng-bind="calculatorCtrl.getMaxChargingOutputAmps()"></span>
+                            amps
+                        </div>
+
+                        <div class="col-3"></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-5">Based on your battery's mAh, this would be a C rate of</div>
+
+                        <div class="col-4">
+                            <span ng-bind="calculatorCtrl.getMaxChargingOutputCRate()"></span>
+                            C
+                        </div>
+
+                        <div class="col-3">A charge rate of 1C is safest. Some batteries are rated for up to 3C to 5C. Anything more than 5C is reckless.</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-5">Is low PSU voltage limiting your max possible charge rate? (Could you charge faster with a higher voltage PSU?)</div>
+
+                        <div class="col-4">
+                            <span ng-bind="calculatorCtrl.getSupplyVoltageLimitingLabel()"></span>
+                        </div>
+
+                        <div class="col-3">If you're charging small packs, this probably isn't relevant, since you're not actually maxxing out your charger's specs.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4 box-shadow">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-5">Based on your charger's watt rating, the maximum amps you could charge at is</div>
+
+                        <div class="col-4">
+                            <span ng-bind="calculatorCtrl.getMaxChargingAmps()"></span>
+                            amps
+                        </div>
+
+                        <div class="col-3">But you can't exceed your charger's amp rating in any case</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-5">Based on your battery's mAh, this would be a charge rate of</div>
+
+                        <div class="col-4">
+                            <span ng-bind="calculatorCtrl.getMaxChargeRate()"></span>
+                            C
+                        </div>
+
+                        <div class="col-3">A charge rate of 1C is safest. Some batteries are rated for up to 3C to 5C. Anything more than 5C is reckless.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4 box-shadow">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-5">Taking into account all possible limitations, the fastest this charger could charge this battery is</div>
+
+                        <div class="col-4">
+                            <span ng-bind="calculatorCtrl.getFastestChargeAmps()"></span>
+                            amps
+                        </div>
+
+                        <div class="col-3">Just because you can doesn't mean it's safe to do it though!</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-5">Which would be a C rate of</div>
+
+                        <div class="col-4">
+                            <span ng-bind="calculatorCtrl.getFastestChargeCRate()"></span>
+                            C
+                        </div>
+
+                        <div class="col-3">A charge rate of 1C is safest. Some batteries are rated for up to 3C to 5C. Anything more than 5C is reckless.</div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-5">The battery would finish charging in approximately</div>
+
+                        <div class="col-4">
+                            <span ng-bind="calculatorCtrl.getChargingTime()"></span>
+                            minutes
+                        </div>
+
+                        <div class="col-3">This doesn't take into account balancing and the fact that charging slows down at the end of the cycle</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
